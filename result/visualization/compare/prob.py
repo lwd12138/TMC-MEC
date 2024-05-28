@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-# from TD3_delay_penalty import prob_gap
 
 worst_cost_prob = []
 worst_cost = np.mean(np.load("../../SAC/dmax/10_40_0.2_0.05/worst.npy"))
@@ -40,8 +39,6 @@ for i in range(7):
     TD3_prob.append(np.mean(TD3[i][-50:]))
 
 TD3_prob = np.array(TD3_prob)
-# prob_gap = np.array(prob_gap)
-# TD3_prob = TD3_prob + prob_gap
 TD3_prob = worst_cost_prob - TD3_prob
 
 ratio1 = (TD3_prob[1] - SAC_prob[1]) / TD3_prob[1]

@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-# from TD3_delay_penalty import task_num_gap
 
 worst_cost_task_num = []
 worst_cost = np.mean(np.load("../../SAC/dmax/10_40_0.2_0.05/worst.npy"))
@@ -36,8 +35,6 @@ for i in range(5):
     TD3_task_num.append(np.mean(TD3[i][-50:]))
 
 TD3_task_num = np.array(TD3_task_num)
-# task_num_gap = np.array(task_num_gap)
-# TD3_task_num = TD3_task_num + task_num_gap
 TD3_task_num = worst_cost_task_num - TD3_task_num
 
 PB_cache_task_num = []

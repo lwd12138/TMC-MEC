@@ -1,13 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-# from TD3_delay_penalty import user_num_gap
 
 worst_cost_user_num = []
-# worst_cost_user_num.append(np.mean(np.load("../../worst_cost/8_20_0.2_0.05/worst.npy")))
-# worst_cost_user_num.append(np.mean(np.load("../../worst_cost/10_20_0.2_0.05/worst.npy")))
-# worst_cost_user_num.append(np.mean(np.load("../../worst_cost/12_20_0.2_0.05/worst.npy")))
-# worst_cost_user_num.append(np.mean(np.load("../../worst_cost/14_20_0.2_0.05/worst.npy")))
-# worst_cost_user_num.append(np.mean(np.load("../../worst_cost/16_20_0.2_0.05/worst.npy")))
 worst_cost = np.mean(np.load("../../SAC/dmax/10_40_0.2_0.05/worst.npy"))
 
 for i in range(5):
@@ -41,8 +35,6 @@ for i in range(5):
     TD3_user_num.append(np.mean(TD3[i][-50:]))
 
 TD3_user_num = np.array(TD3_user_num)
-# user_num_gap = np.array(user_num_gap)
-# TD3_user_num = TD3_user_num + user_num_gap
 TD3_user_num = worst_cost_user_num - TD3_user_num
 
 PB_cache_user_num = []
