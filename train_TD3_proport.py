@@ -1,8 +1,7 @@
 import numpy as np
 import torch
 from env_proport_reqOnly import Environment
-from normalization import Normalization, RewardScaling
-import math
+from normalization import Normalization
 from args import parser
 import wandb
 from TD3 import TD3
