@@ -5,7 +5,7 @@ import numpy as np
 import copy
 from torch.distributions import Normal
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu" if torch.cuda.is_available() else "cpu")
 
 class Actor(nn.Module):
     def __init__(self, state_dim, action_dim, hidden_width, max_action):

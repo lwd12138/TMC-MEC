@@ -1,6 +1,5 @@
 import numpy as np
 import torch
-import matplotlib.pyplot as plt
 from env_proport_reqOnly import Environment
 from args import parser
 import wandb

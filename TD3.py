@@ -6,23 +6,17 @@ import torch.nn.functional as F
 import math
 
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu" if torch.cuda.is_available() else "cpu")
 
 noise_max = 0.1
 noise_min = 0
 noi_decay = 80000
 noise_by_frame = lambda frame_idx: noise_min + (noise_max - noise_min) * math.exp(
     -1. * frame_idx / noi_decay)
-# Implementation of Twin Delayed Deep Deterministic Policy Gradients (TD3)
-# Paper: https://arxiv.org/abs/1802.09477
 
-# 8: Orthogonal Initialization of Weights and Constant Initialization of biases
-# 隐藏层的weights use orthogonal initialization of weights with scaling np.sqrt(2)
-# biases设置为0
 def orthogonal_init(layer, gain=1.0):
     nn.init.orthogonal_(layer.weight, gain=gain)
     nn.init.constant_(layer.bias, 0)
-
 
 class Actor(nn.Module):
 	def __init__(self, args, state_dim, action_dim, max_action):
@@ -36,7 +30,7 @@ class Actor(nn.Module):
 
 		if args.use_orthogonal_init:
 			print("------use_orthogonal_init------")
-			# 对神经网络层进行正交初始化，激活层不用
+			# The neural network layer is orthogonally initialized, and the activation layer is not
 			orthogonal_init(self.l1)
 			orthogonal_init(self.l2)
 			orthogonal_init(self.l3, gain=0.01)
@@ -64,7 +58,7 @@ class Critic(nn.Module):
 
 		if args.use_orthogonal_init:
 			print("------use_orthogonal_init------")
-			# 对神经网络层进行正交初始化，激活层不用
+			# The neural network layer is orthogonally initialized, and the activation layer is not
 			orthogonal_init(self.l1)
 			orthogonal_init(self.l2)
 			orthogonal_init(self.l3)
@@ -99,9 +93,9 @@ class TD3(object):
 	def __init__(self, args, state_dim, action_dim, max_train_steps, max_action):
 		self.lr_a = 3e-4
 		self.lr_c = 3e-4
-		self.use_lr_decay = args.use_lr_decay		# 学习率衰减（Learning Rate Decay）
-		self.use_grad_clip = args.use_grad_clip		# 梯度裁剪（Gradient clip）
-		self.set_adam_eps = args.set_adam_eps		# 使用自定义的Adam的eps: 1e-5，而非默认1e-8
+		self.use_lr_decay = args.use_lr_decay		# Learning Rate Decay
+		self.use_grad_clip = args.use_grad_clip		# Gradient clip
+		self.set_adam_eps = args.set_adam_eps		# Set Adam epsilon=1e-5
 		self.alpha = 2.5
 
 		self.actor = Actor(args, state_dim, action_dim, max_action).to(device)
@@ -139,17 +133,6 @@ class TD3(object):
 		state, action, next_state, reward = replay_buffer.sample(batch_size)
 
 		with torch.no_grad():
-			# Select action according to policy and add clipped noise
-			# noise = (
-			# 	torch.randn_like(action) * self.policy_noise
-			# ).clamp(-self.noise_clip, self.noise_clip)
-			# noise = (
-			# 	torch.randn_like(action) * policy_noise
-			# ).clamp(-self.noise_clip, self.noise_clip)
-
-			# next_action = (
-			# 	self.actor_target(next_state) + noise
-			# ).clamp(-self.max_action, self.max_action)
 			next_action = (self.actor_target(next_state))
 
 			# Compute the target Q value
@@ -179,7 +162,7 @@ class TD3(object):
 			Q = self.critic.Q1(state, pi)
 			lmbda = self.alpha/Q.abs().mean().detach()
 
-			actor_loss = -lmbda * Q.mean() + F.mse_loss(pi, action)	# 加BC（行为克隆）
+			actor_loss = -lmbda * Q.mean() + F.mse_loss(pi, action)	# Behavioral Cloning
 			
 			# Optimize the actor 
 			self.actor_optimizer.zero_grad()
